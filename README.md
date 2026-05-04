@@ -20,7 +20,7 @@ iOS app that bridges **ChatGPT** (OpenAI) with **Rokid AR glasses** — fully bi
 
 ## How it works
 
-The glasses are a **first-class input source** — not just a display. Any TCP client connected to port 8096 can send a text question and get ChatGPT's answer streamed back. The phone is the bridge.
+The glasses are a **first-class input source** — not just a display. The glasses can send voice queries (via `onAsrResult()`) and receive streaming responses. The phone is the bridge.
 
 ### Three ways to ask ChatGPT:
 
@@ -28,7 +28,7 @@ The glasses are a **first-class input source** — not just a display. Any TCP c
 |--------|-----|
 | 🗣 **Voice** | Tap mic → speak → auto-sends after 1.8 s of silence |
 | ⌨️ **Type** | Text field in the Chat tab |
-| 👓 **Glasses** | Send `QUERY: <question>\n` (or plain text) over TCP :8096 |
+| 👓 **Glasses** | Speak your question — received via RokidSDK `onAsrResult()` |
 
 ### What the glasses see (streamed in real time):
 
@@ -56,7 +56,7 @@ The glasses are a **first-class input source** — not just a display. Any TCP c
 - **Conversation memory** — configurable history (1–20 message pairs)
 - **Model selector** — GPT-4o mini (fastest), GPT-4o, GPT-4 Turbo, GPT-3.5 Turbo
 - **Custom system prompt** — set ChatGPT's persona and style
-- **Bidirectional TCP server** — glasses can both receive output AND send queries
+- **Bidirectional** — glasses receive streamed output and send voice queries via RokidSDK `onAsrResult()`
 - **Suggested prompts** — quick-start questions on empty state
 
 ## SDK Setup
@@ -82,7 +82,7 @@ The only thing left for each app is filling in the three credential constants (`
 
 ## Setup
 
-1. Open `RokidChatGPT.xcodeproj` in Xcode 15+.
+1. Open `RokidChatGPT.xcworkspace` in Xcode 15+ (after running `pod install`) 15+.
 2. Set your team in Signing & Capabilities.
 3. Build and run on iPhone (iOS 17+).
 4. Grant **microphone** and **speech recognition** permissions when prompted.
@@ -90,7 +90,7 @@ The only thing left for each app is filling in the three credential constants (`
 6. Choose a model (GPT-4o mini recommended for fastest glasses response).
 7. *(Glasses now connect automatically over Bluetooth — no TCP port needed.)*
 
-## TCP protocol (port 8096)
+## Communication protocol
 
 ### Phone → Glasses
 ```
@@ -132,4 +132,4 @@ Responses come back as Server-Sent Events parsed in Swift via `URLSession.bytes(
 - iOS 17.0+
 - Xcode 15+
 - OpenAI API key ([platform.openai.com](https://platform.openai.com/api-keys))
-- Rokid AR glasses on the same Wi-Fi (optional — app works standalone as a ChatGPT chat client)
+- Rokid AI glasses (paired via Bluetooth — no Wi-Fi needed) (optional — app works standalone as a ChatGPT chat client)
